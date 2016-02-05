@@ -1,5 +1,7 @@
 # Knockout-Bindings
 
-Custom Knockout bindings
+Custom Knockout bindings.
+Every binding is pure Javascript & Knockout for compatibility.
 
-Every file is pure Javascript & Knockout
+hasValue:
+  Modified version of the value binding. It will add a class "hasValue",or custom class(es) using inputClass, to your input    element.  
