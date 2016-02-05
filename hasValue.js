@@ -2,6 +2,7 @@
 	Modified version of the KO value binding used to trigger a class.
 	default: hasValue
 	for custom class use inputClass as a binding
+	https://github.com/circuitcreature/Knockout-Bindings
 */
 ko.bindingHandlers['hasValue'] = {
 	init: function(element,valueAccessor, allBindings){
@@ -20,13 +21,11 @@ ko.bindingHandlers['hasValue'] = {
 		var update = function(){
 			var nv = ko.utils.unwrapObservable( val() ),
 				elm_v = ko.selectExtensions.readValue(element),
-				reg = new RegExp(class_name,"i");
+				reg = new RegExp(class_name,'g');
+			element.className = element.className.replace(reg,'');
+
 			if( nv || nv === 0 ){
-				if(!element.className.match(reg)){
-					element.className += class_name;
-				}
-			}else {
-				element.className = element.className.replace(reg,'');
+				element.className += class_name;
 			}
 			if(nv !== elm_v){
 				ko.selectExtensions.writeValue(element, nv)
