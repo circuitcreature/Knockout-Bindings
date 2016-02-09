@@ -1,7 +1,7 @@
 /*
 	The int binding will accept any int, all other chars are removed.
-	use binding postivie: true if you require only posies.
-	type = 'text' is required. HTML5 numbers does not play nice.
+	use an object to require postivie: int: {value: (), positive: true}.
+	input type = 'text' is required. HTML5 numbers does not play nice.
 	https://github.com/circuitcreature/Knockout-Bindings.
 */
 ;(function(){
@@ -13,26 +13,29 @@
 			}
 			var val = valueAccessor(),
 				positive = false;
-			if(all.hasOwnProperty('positive') && allBindings().positive){
-				positive = true;
+			if(({}).toString.call(val) == '[object Object]'){
+				if(val.hasOwnProperty('value')){
+					val = val.value;
+				}else{
+					throw new Error('The int binding is in object form and requires a "value" property.')
+				}
+				if(val.hasOwnProperty('positive') && val.positive){
+					positive = true;
+				}
 			}
-			var update_binding = function(val){
-				var obs = valueAccessor(),
+			var update_binding = function(){
+				var obs = val,
 					elm_val = ko.selectExtensions.readValue(element);
 				obs(elm_val);
 			};
 			var update = function(){
-				var nv = ko.utils.unwrapObservable( val() ),
-					elm_v = ko.selectExtensions.readValue(element);
-				if(nv){
-					if(positive){
-						nv = (nv += '').replace( /[^0-9]/g ,'');
-					}else{
-						nv = (nv += '').replace( /[^0-9-]/g ,'');
-						if(nv.charAt(0) == '-'){
-							nv = '-' + nv;
-						}
-					}
+				var nv = ko.utils.unwrapObservable( val() );
+				if(!nv){ return; }
+				var elm_v = ko.selectExtensions.readValue(element);
+				if(positive){
+					nv = (nv += '').replace( /[^0-9]/g ,'');
+				}else{
+					nv = (nv += '').replace( /(?!^-)[^0-9]/g ,'');
 				}
 				if(nv !== elm_v){
 					ko.selectExtensions.writeValue(element, nv)
